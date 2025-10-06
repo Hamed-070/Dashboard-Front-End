@@ -1,10 +1,11 @@
-import axios , {AxiosResponse} from "../../node_modules/axios/index";
+import axios , {AxiosPromise, AxiosResponse} from "../../node_modules/axios/index";
 import React, { useRef, useState } from "react"
-import {motion } from 'framer-motion' 
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
+import { Routes , Route } from "react-router-dom";
+import Home from "./Home";
 
 
-export default function Login(){
+export default function Login({ onLoginSuccess }: { onLoginSuccess: () => void }){
 
     const [form , setForm] = useState({
         username:"" , 
@@ -12,21 +13,20 @@ export default function Login(){
     }) ; 
     const [loading , setLoading] = useState<boolean>(false) ;     
     const [mg , setMg] = useState<string>('') ;  
-    const naviage = useNavigate() ; 
+    const navigate = useNavigate() ; 
 
     async function handelSubmit (e:React.FormEvent<HTMLFormElement>) {
         try{
             e.preventDefault() ; 
             setLoading(true) ; 
-            const res = await axios.post(`http://localhost:8000/token/` , form) ; 
+            const res:AxiosResponse = await axios.post(`http://localhost:8000/token/` , form) ; 
             console.log(res) ;  
             if (res.status === 200){
                 localStorage.setItem('access' , res.data.access) ; 
                 localStorage.setItem('refresh' , res.data.refresh) ; 
                 localStorage.setItem('username' , form.username) ;   
-                 
-                naviage('/home') ; 
-
+                onLoginSuccess() ;
+                navigate('/') ; 
             }
         }catch(err:any){
             if(err.response.status === 401){
@@ -47,7 +47,10 @@ export default function Login(){
 
 
     return(
-        <div className="w-full h-full flex items-center justify-center bg-gray-300"> 
+        <div className="w-full h-screen flex items-center justify-center bg-gray-300"> 
+            {/* <Routes>
+                <Route path="/" element={<Home />} />
+            </Routes> */}
 
             {loading ? (
                 <div className="w-full h-full flex items-center justify-center">
