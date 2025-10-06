@@ -1,10 +1,3 @@
-<<<<<<< HEAD
-import React from 'react';
-import Login from './components/Login';
-import {Route , Routes} from 'react-router-dom'
-import Home from './components/Home'
-import PrivateRoute from './components/PrivateRoute/PrivateRoute'
-=======
 import Login from './components/Login';
 import {Route , Routes , Link} from 'react-router-dom'
 import Home from './components/Home'
@@ -21,29 +14,11 @@ import { BsFillPeopleFill } from "react-icons/bs";
 import { IoSettingsSharp } from "react-icons/io5";
 import { CiLogout } from "react-icons/ci";
 import { useState , useEffect } from 'react';
->>>>>>> another
 
 require('./App.css'); 
 
 
 function App() {
-<<<<<<< HEAD
-  return (
-    <div className="h-screen w-full flex">
-
-        <Routes>
-          <Route path='/home' element={
-            <PrivateRoute>
-              <Home />
-            </PrivateRoute>
-          } />
-          <Route path='/login' element={<Login />} />
-        </Routes>
-
-    </div>
-  );
-}
-=======
 
   // const token = localStorage.getItem('access') ;  
   const [token , setToken] = useState<string | null> (localStorage.getItem('access')) ; 
@@ -123,6 +98,5 @@ function App() {
 
 
 
->>>>>>> another
 
 export default App;

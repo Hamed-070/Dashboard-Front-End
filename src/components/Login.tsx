@@ -1,12 +1,3 @@
-<<<<<<< HEAD
-import axios , {AxiosResponse} from "../../node_modules/axios/index";
-import React, { useRef, useState } from "react"
-import {motion } from 'framer-motion' 
-import { useNavigate } from "react-router-dom";
-
-
-export default function Login(){
-=======
 import axios , {AxiosPromise, AxiosResponse} from "../../node_modules/axios/index";
 import React, { useRef, useState } from "react"
 import { Navigate, useNavigate } from "react-router-dom";
@@ -15,7 +6,6 @@ import Home from "./Home";
 
 
 export default function Login({ onLoginSuccess }: { onLoginSuccess: () => void }){
->>>>>>> another
 
     const [form , setForm] = useState({
         username:"" , 
@@ -23,34 +13,20 @@ export default function Login({ onLoginSuccess }: { onLoginSuccess: () => void }
     }) ; 
     const [loading , setLoading] = useState<boolean>(false) ;     
     const [mg , setMg] = useState<string>('') ;  
-<<<<<<< HEAD
-    const naviage = useNavigate() ; 
-=======
     const navigate = useNavigate() ; 
->>>>>>> another
 
     async function handelSubmit (e:React.FormEvent<HTMLFormElement>) {
         try{
             e.preventDefault() ; 
             setLoading(true) ; 
-<<<<<<< HEAD
-            const res = await axios.post(`http://localhost:8000/token/` , form) ; 
-=======
             const res:AxiosResponse = await axios.post(`http://localhost:8000/token/` , form) ; 
->>>>>>> another
             console.log(res) ;  
             if (res.status === 200){
                 localStorage.setItem('access' , res.data.access) ; 
                 localStorage.setItem('refresh' , res.data.refresh) ; 
                 localStorage.setItem('username' , form.username) ;   
-<<<<<<< HEAD
-                 
-                naviage('/home') ; 
-
-=======
                 onLoginSuccess() ;
                 navigate('/') ; 
->>>>>>> another
             }
         }catch(err:any){
             if(err.response.status === 401){
@@ -71,14 +47,10 @@ export default function Login({ onLoginSuccess }: { onLoginSuccess: () => void }
 
 
     return(
-<<<<<<< HEAD
-        <div className="w-full h-full flex items-center justify-center bg-gray-300"> 
-=======
         <div className="w-full h-screen flex items-center justify-center bg-gray-300"> 
             {/* <Routes>
                 <Route path="/" element={<Home />} />
             </Routes> */}
->>>>>>> another
 
             {loading ? (
                 <div className="w-full h-full flex items-center justify-center">
