@@ -1,4 +1,8 @@
 
+
+
+// The Customer Page , Here stores the Informations of customers , Top customers and etc ...  (Incomplete) 
+
 export default function Customers (){
 
     return(

@@ -1,9 +1,9 @@
-import axios , {AxiosPromise, AxiosResponse} from "../../node_modules/axios/index";
-import React, { useRef, useState } from "react"
-import { Navigate, useNavigate } from "react-router-dom";
-import { Routes , Route } from "react-router-dom";
-import Home from "./Home";
+import axios , {AxiosResponse} from "../../node_modules/axios/index";
+import React, { useState } from "react"
+import { useNavigate } from "react-router-dom";
 
+
+// Here is the Login page 
 
 export default function Login({ onLoginSuccess }: { onLoginSuccess: () => void }){
 

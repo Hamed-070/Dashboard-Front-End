@@ -18,18 +18,19 @@ import { useState , useEffect } from 'react';
 require('./App.css'); 
 
 
-function App() {
+export default function App() {
 
-  // const token = localStorage.getItem('access') ;  
+  // Access to access Token 
   const [token , setToken] = useState<string | null> (localStorage.getItem('access')) ; 
 
+  // To recieve Token just once 
   useEffect(() => {
     const stored = localStorage.getItem("access");
     setToken(stored);
   }, []);
 
+  // Comparasion
   if(!token){
-
       return (
         <Routes>
           <Route path="/login" element={<Login onLoginSuccess={() => setToken(localStorage.getItem("access"))} />} />
@@ -39,10 +40,10 @@ function App() {
     }
 
   else{
-
      return(
       <div className="h-screen w-full flex">
-          <div className='w-1/6 h-full bg-gray-200 p-5 flex flex-col gap-10'>
+          <div className='sticky w-1/6 h-full bg-gray-200 p-5 flex flex-col gap-10'>
+
             {/* Logo  */}
             <div className='flex flex-row pl-5 pt-10 gap-2 items-center justify-start'>
                 <IoLogoSlack className='text-5xl text-yellow-400' />
@@ -61,7 +62,6 @@ function App() {
               <hr className='h-px bg-slate-600 border-0' />
 
               {/* Others  */}
-
               <div className='w-full  h-auto flex flex-col gap-3 p-5 pl-10 justify-center items-start'>
                 <Link to={'/setting'} className='flex flex-row gap-2  transition-transform hover:scale-110'><span><IoSettingsSharp className='text-2xl' /></span>Setting</Link>
                 <Link to={'/'} className='flex flex-row gap-2  transition-transform hover:scale-110' ><span><CiLogout className='text-2xl'/></span> Sign Out</Link>
@@ -69,10 +69,10 @@ function App() {
 
             </div>
 
-
           </div>
-           
-           <div className='w-5/6 h-screen'>
+          
+           {/* Routes  */}
+           <div className='w-5/6 h-full'>
             <Routes>
               <Route path='/' element={<Home />} />
               <Route path='/products' element={<Products />} />
@@ -80,23 +80,11 @@ function App() {
               <Route path='/setting' element={<Setting />} />
               <Route path='/login' element={<Login onLoginSuccess={() => setToken(localStorage.getItem("access"))} />} />
             </Routes> 
-
-
             </div> 
           
       </div>
     )
   }
+}
 
 
-  }
-
-
-
-
-
-
-
-
-
-export default App;
