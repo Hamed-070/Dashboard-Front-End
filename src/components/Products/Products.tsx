@@ -1,6 +1,5 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react"
 import api from "../../api/api"
-import { url } from "inspector"
 import { useNavigate } from "react-router-dom"
 
 
@@ -19,15 +18,14 @@ interface Product {
 // Products page , Here stores the Informations of Products , and featurs like Searching and etc ... (Incomplete) 
 export default function (){
 
-    const [products , setProducts] = useState<Product[]>([]) ;  
+    const [products , setProducts] = useState<Product[]>([]) ;   
+    const [originalProduct , setOriginalProduct] = useState<Product[]>([]) ; 
     const navigate = useNavigate() ; 
 
     useEffect(() => {
         fetchDataFromApi(setProducts); 
-
     } , [])
 
-    console.log('Here is : ' , products) ; 
 
 
     return(
@@ -42,7 +40,7 @@ export default function (){
                 </div>
 
                 {/* Search Part  */}
-                <div className="w-4/6 flex items-center justify-center"> 
+                <div className="w-4/6 fixed flex items-center justify-center"> 
                     <input type="text" placeholder="Search Product..." className="h-10 text-lg w-1/2 p-2 rounded-md outline-none" />
                 </div>
 
@@ -55,22 +53,22 @@ export default function (){
             </div>
 
             {/* Below Part  */}
-            <div  className="max-h-full w-full  gap-2 bg-gray-300 rounded-lg flex flex-col p-10 overflow-y-auto">
+            <div  className="h-full w-full  gap-2 bg-gray-300 rounded-lg flex flex-col p-10 overflow-y-auto">
 
                 {/* Tags  */}
                 <h1 className="text-5xl">Filter</h1>
-                <div className="h-24 p-5   flex flex-row gap-5 justify-start items-center">
-                    <button className="bg-white rounded-md w-32 h-9 transition-opacity hover:opacity-50">All</button>
-                    <button className="bg-white rounded-md w-32 h-9 transition-opacity hover:opacity-50">Home & Furniture</button>
-                    <button className="bg-white rounded-md w-32 h-9 transition-opacity hover:opacity-50">Fashio & Clothing</button>
-                    <button className="bg-white rounded-md w-32 h-9 transition-opacity hover:opacity-50">Electronics</button>
-                    <button className="bg-white rounded-md w-32 h-9 transition-opacity hover:opacity-50">Sports</button>
-                    <button className="bg-white rounded-md w-32 h-9 transition-opacity hover:opacity-50">Books</button>
+                <div className="h-24 p-5  flex flex-row gap-5 justify-start items-center">
+                    <button className="bg-white rounded-md w-32 h-9 transition-opacity hover:opacity-50" onClick={() => fetchDataFromApi(setProducts)}>All</button>
+                    <button className="bg-white rounded-md w-32 h-9 transition-opacity hover:opacity-50" onClick={() => filterProduct(setProducts , 'home%20%26%20furniture') }>Home & Furniture</button>
+                    <button className="bg-white rounded-md w-32 h-9 transition-opacity hover:opacity-50" onClick={() => filterProduct(setProducts , 'fashion%20%26%20apparel') }>Fashion & Apparel</button>
+                    <button className="bg-white rounded-md w-32 h-9 transition-opacity hover:opacity-50" onClick={() => filterProduct(setProducts , 'electronics%20%26%20gadgets')}>Electronics</button>
+                    <button className="bg-white rounded-md w-32 h-9 transition-opacity hover:opacity-50" onClick={() => filterProduct(setProducts , 'sports') }>Sports</button>
+                    <button className="bg-white rounded-md w-32 h-9 transition-opacity hover:opacity-50" onClick={() => filterProduct(setProducts , 'books') }>Books</button>
                 </div>
 
                 {/* Explore Part (Products)  */}
 
-                <div className="max-h-full w-full  bg-white rounded-lg p-10 grid grid-cols-3 gap-5 overflow-y-auto ">
+                <div className="h-full w-full  bg-white rounded-lg p-10 grid grid-cols-3 gap-5 overflow-y-auto ">
                     {/* <h1 className="text-4xl">Products</h1> */} 
                     {products.map((item , index) => (
                         <div key={index} onClick={() => navigate('/products/detailproduct/' , { state:item } )} className="rounded-lg  shadow-lg items-center justify-center h-72 flex flex-col transition-transform hover:scale-110 ">
@@ -88,7 +86,22 @@ export default function (){
 
 
 
-async function fetchDataFromApi <t>(setData: Dispatch<SetStateAction<t>>) {
+async function filterProduct <t>(setData: Dispatch<SetStateAction<t>> , filter:string){ 
+    // const data:any = Data.filter((item) => item.category === filter || item.category.includes(filter));  
+    try {
+        const response = await api(`api/products/?category=${filter}`) ; 
+        console.log(response) ;  
+        setData(response.data) ; 
+    }catch(err){
+        console.error() ;
+    }
+
+}
+
+
+
+
+async function fetchDataFromApi <t>(setData: Dispatch<SetStateAction<t>>){
     try{
         const response = await api('api/products/') ; 
         console.log(response) ;  
