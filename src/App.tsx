@@ -1,11 +1,12 @@
-import Login from './components/Login';
+// import Login from './components/Login';
+import Login from './components/Login/Login';
 import {Route , Routes , Link} from 'react-router-dom'
-import Home from './components/Home'
+import Home from './components/Home/Home'
 import { Navigate } from 'react-router-dom';
 
-import Customers from './components/Customers';
-import Products from './components/Products';
-import Setting from './components/Setting';
+import Customers from './components/Customers/Customers';
+import Products from './components/Products/Products';
+import Setting from './components/Setting/Setting';
 
 import { IoLogoSlack } from "react-icons/io";
 import { IoAnalyticsSharp } from "react-icons/io5";
@@ -14,6 +15,7 @@ import { BsFillPeopleFill } from "react-icons/bs";
 import { IoSettingsSharp } from "react-icons/io5";
 import { CiLogout } from "react-icons/ci";
 import { useState , useEffect } from 'react';
+import DetailProduct from './components/Products/DetailProduct';
 
 require('./App.css'); 
 
@@ -42,7 +44,7 @@ export default function App() {
   else{
      return(
       <div className="h-screen w-full flex">
-          <div className='sticky w-1/6 h-full bg-gray-200 p-5 flex flex-col gap-10'>
+          <div className='w-1/6 h-full bg-gray-200 p-5 flex flex-col gap-10'>
 
             {/* Logo  */}
             <div className='flex flex-row pl-5 pt-10 gap-2 items-center justify-start'>
@@ -76,6 +78,8 @@ export default function App() {
             <Routes>
               <Route path='/' element={<Home />} />
               <Route path='/products' element={<Products />} />
+              <Route path='/products/detailproduct/' element={<DetailProduct />} />
+
               <Route path='/customers' element={<Customers />} />
               <Route path='/setting' element={<Setting />} />
               <Route path='/login' element={<Login onLoginSuccess={() => setToken(localStorage.getItem("access"))} />} />
