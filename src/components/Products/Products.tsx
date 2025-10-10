@@ -1,7 +1,6 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react"
 import api from "../../api/api"
-import { useNavigate } from "react-router-dom"
-
+import { useNavigate } from "react-router-dom" 
 
 interface Product {
     name: string 
@@ -53,11 +52,9 @@ export default function (){
             </div>
 
             {/* Below Part  */}
-            <div  className="h-full w-full  gap-2 bg-gray-300 rounded-lg flex flex-col p-10 overflow-y-auto">
-
+            <div  className="h-full w-full  gap-2 bg-gray-300 rounded-lg flex flex-col p-3 overflow-y-auto">   
                 {/* Tags  */}
-                <h1 className="text-5xl">Filter</h1>
-                <div className="h-24 p-5  flex flex-row gap-5 justify-start items-center">
+                <div className="h-24 flex flex-row gap-5 justify-start items-center">
                     <button className="bg-white rounded-md w-32 h-9 transition-opacity hover:opacity-50" onClick={() => fetchDataFromApi(setProducts)}>All</button>
                     <button className="bg-white rounded-md w-32 h-9 transition-opacity hover:opacity-50" onClick={() => filterProduct(setProducts , 'home%20%26%20furniture') }>Home & Furniture</button>
                     <button className="bg-white rounded-md w-32 h-9 transition-opacity hover:opacity-50" onClick={() => filterProduct(setProducts , 'fashion%20%26%20apparel') }>Fashion & Apparel</button>
@@ -70,11 +67,10 @@ export default function (){
 
                 <div className="h-full w-full  bg-white rounded-lg p-10 grid grid-cols-3 gap-5 overflow-y-auto ">
                     {/* <h1 className="text-4xl">Products</h1> */} 
-                    {products.map((item , index) => (
+                    {products.map((item: Product , index) => (
                         <div key={index} onClick={() => navigate('/products/detailproduct/' , { state:item } )} className="rounded-lg  shadow-lg items-center justify-center h-72 flex flex-col transition-transform hover:scale-110 ">
                             <img src={item.image} alt="photo"  className="w-full h-3/4 object-cover rounded-lg cursor-pointer transition-transform  hover:opacity-75 hover:scale-95 hover:object-center hover:bg-cover " />
                             <h1 className="text-2xl h-1/4 pt-5 font-serif">{item.name}</h1> 
-
                         </div>
                     )) }
                 </div>  
@@ -84,10 +80,20 @@ export default function (){
     )
 }
 
+const itemProduct = React.memo(({ item }: { item: Product }) => 
+(
+    <div className="rounded-lg shadow-lg items-center justify-center h-72 flex flex-col transition-transform hover:scale-105 cursor-pointer">
+
+            <img src={item.image} alt={item.name} className="w-full h-3/4 object-cover rounded-lg transition-opacity hover:opacity-75" loading="lazy" />
+            <h1 className="text-2xl h-1/4 pt-5 font-serif truncate w-full px-2 text-center">{item.name}</h1>
+
+    </div>
+))
+
+
 
 
 async function filterProduct <t>(setData: Dispatch<SetStateAction<t>> , filter:string){ 
-    // const data:any = Data.filter((item) => item.category === filter || item.category.includes(filter));  
     try {
         const response = await api(`api/products/?category=${filter}`) ; 
         console.log(response) ;  
