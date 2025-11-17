@@ -1,6 +1,8 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react"
 import api from "../../api/api"
 import { useNavigate } from "react-router-dom" 
+import ProductMemo from "./ProductMemo"
+import { FaSearch } from "react-icons/fa";
 
 interface Product {
     name: string 
@@ -8,23 +10,30 @@ interface Product {
     image: string 
     price: number 
     category: string
-    quantity: number 
+    quantity: number  
+    id?: number 
 }
-
-
 
 
 // Products page , Here stores the Informations of Products , and featurs like Searching and etc ... (Incomplete) 
 export default function (){
 
     const [products , setProducts] = useState<Product[]>([]) ;   
-    const [originalProduct , setOriginalProduct] = useState<Product[]>([]) ; 
+    const [search , setSearch] = useState('') ;  
+    const [notFound , setNotFound] = useState<React.SetStateAction<Boolean>> (false) ;
     const navigate = useNavigate() ; 
 
     useEffect(() => {
-        fetchDataFromApi(setProducts); 
+        fetchDataFromApi(setProducts , setNotFound); 
     } , [])
 
+
+    const handelSearch = () => {
+        searchProduct(setProducts , search , setNotFound) ; 
+        if(!products){
+            setNotFound(true) ; 
+        }
+    }
 
 
     return(
@@ -40,7 +49,11 @@ export default function (){
 
                 {/* Search Part  */}
                 <div className="w-4/6 fixed flex items-center justify-center"> 
-                    <input type="text" placeholder="Search Product..." className="h-10 text-lg w-1/2 p-2 rounded-md outline-none" />
+                    <label className="flex flex-row items-center justify-between h-10 w-1/3 bg-white rounded-lg p-2">
+                        <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search Product..." className="h-10 text-lg w-1/2 p-2 rounded-md outline-none"/>
+                        <FaSearch className="text-2xl hover:cursor-pointer" onClick={handelSearch} />
+                    </label>
+
                 </div>
 
                 {/* Right Part  */}
@@ -48,14 +61,13 @@ export default function (){
                     <button className="bg-blue-500 text-white rounded-lg w-28 h-10 transition-transform hover:scale-110">Add Product</button>
                 </div>
 
-
             </div>
 
             {/* Below Part  */}
             <div  className="h-full w-full  gap-2 bg-gray-300 rounded-lg flex flex-col p-3 overflow-y-auto">   
                 {/* Tags  */}
                 <div className="h-24 flex flex-row gap-5 justify-start items-center">
-                    <button className="bg-white rounded-md w-32 h-9 transition-opacity hover:opacity-50" onClick={() => fetchDataFromApi(setProducts)}>All</button>
+                    <button className="bg-white rounded-md w-32 h-9 transition-opacity hover:opacity-50" onClick={() => fetchDataFromApi(setProducts , setNotFound)}>All</button>
                     <button className="bg-white rounded-md w-32 h-9 transition-opacity hover:opacity-50" onClick={() => filterProduct(setProducts , 'home%20%26%20furniture') }>Home & Furniture</button>
                     <button className="bg-white rounded-md w-32 h-9 transition-opacity hover:opacity-50" onClick={() => filterProduct(setProducts , 'fashion%20%26%20apparel') }>Fashion & Apparel</button>
                     <button className="bg-white rounded-md w-32 h-9 transition-opacity hover:opacity-50" onClick={() => filterProduct(setProducts , 'electronics%20%26%20gadgets')}>Electronics</button>
@@ -65,34 +77,47 @@ export default function (){
 
                 {/* Explore Part (Products)  */}
 
-                <div className="h-full w-full  bg-white rounded-lg p-10 grid grid-cols-3 gap-5 overflow-y-auto ">
-                    {/* <h1 className="text-4xl">Products</h1> */} 
-                    {products.map((item: Product , index) => (
-                        <div key={index} onClick={() => navigate('/products/detailproduct/' , { state:item } )} className="rounded-lg  shadow-lg items-center justify-center h-72 flex flex-col transition-transform hover:scale-110 ">
-                            <img src={item.image} alt="photo"  className="w-full h-3/4 object-cover rounded-lg cursor-pointer transition-transform  hover:opacity-75 hover:scale-95 hover:object-center hover:bg-cover " />
-                            <h1 className="text-2xl h-1/4 pt-5 font-serif">{item.name}</h1> 
+                <div className="h-full w-full  bg-white rounded-lg p-10 grid grid-cols-4 gap-5 overflow-y-auto" >
+                    {notFound ? (
+                        <h1 className="text-4xl font-mono">Not Found !</h1>
+                    ) : (
+                        products.map((item: Product , index) => (
+                        <div key={index} onClick={() => navigate('/products/detailproduct/' , { state:item } )} className="h-72 flex flex-col transition-transform hover:scale-75">
+                            <ProductMemo item={item} key={item.id} />
                         </div>
-                    )) }
+                    )))
+                    }
                 </div>  
 
+
+                
             </div>
         </div>
     )
 }
 
-const itemProduct = React.memo(({ item }: { item: Product }) => 
-(
-    <div className="rounded-lg shadow-lg items-center justify-center h-72 flex flex-col transition-transform hover:scale-105 cursor-pointer">
 
-            <img src={item.image} alt={item.name} className="w-full h-3/4 object-cover rounded-lg transition-opacity hover:opacity-75" loading="lazy" />
-            <h1 className="text-2xl h-1/4 pt-5 font-serif truncate w-full px-2 text-center">{item.name}</h1>
+async function searchProduct <t>(setData:Dispatch<SetStateAction<t>> , filter:string , setStatus:Dispatch<SetStateAction<Boolean>> ){
+    try {
+        const response = await api(`api/products/?search=${filter}`) ; 
+        console.log(response) ;  
+        setData(response.data) ;  
 
-    </div>
-))
+        if(response.data.length < 1) 
+        {
+            setStatus(true) ; 
+        }
+
+    }catch(err){
+        console.error() ;
+    }
+}
 
 
 
 
+
+// To fetch Data from server based on filtering Products
 async function filterProduct <t>(setData: Dispatch<SetStateAction<t>> , filter:string){ 
     try {
         const response = await api(`api/products/?category=${filter}`) ; 
@@ -106,9 +131,10 @@ async function filterProduct <t>(setData: Dispatch<SetStateAction<t>> , filter:s
 
 
 
-
-async function fetchDataFromApi <t>(setData: Dispatch<SetStateAction<t>>){
+// To fetch Data from server
+async function fetchDataFromApi <t>(setData: Dispatch<SetStateAction<t>> , setStatus:Dispatch<SetStateAction<Boolean>>){
     try{
+         setStatus(false) ; 
         const response = await api('api/products/') ; 
         console.log(response) ;  
         setData(response.data) ; 
